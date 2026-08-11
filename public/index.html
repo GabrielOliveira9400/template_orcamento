@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Orçamento - QUINTELA HOME SERVICE</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- Top Header Banner -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <div class="brand-icon">Q</div>
+        <div>
+          <h1 class="navbar-title">Gerador de Orçamentos</h1>
+          <p class="navbar-subtitle">QUINTELA HOME SERVICE • Preencha os dados e gere o PDF</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Form -->
+  <main class="container">
+    <form id="estimateForm">
+
+      <!-- Section 1: Dados do Orçamento & Empresa -->
+      <section class="form-section">
+        <div class="section-header">
+          <div class="section-icon">📋</div>
+          <h2 class="section-title">Dados Gerais do Orçamento</h2>
+        </div>
+        <div class="grid-3">
+          <div class="form-group">
+            <label for="estimateNumber">Número do Orçamento <span class="required">*</span></label>
+            <input type="text" id="estimateNumber" class="form-control" value="EST-001" required>
+          </div>
+          <div class="form-group">
+            <label for="estimateDate">Data da Emissão <span class="required">*</span></label>
+            <input type="text" id="estimateDate" class="form-control" value="July 22, 2026" required>
+          </div>
+          <div class="form-group">
+            <label for="companyPhone">Telefone de Contato</label>
+            <input type="text" id="companyPhone" class="form-control" value="781-974-4831">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Dados do Cliente -->
+      <section class="form-section">
+        <div class="section-header">
+          <div class="section-icon">👤</div>
+          <h2 class="section-title">Dados do Cliente</h2>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="clientName">Nome do Cliente <span class="required">*</span></label>
+            <input type="text" id="clientName" class="form-control" placeholder="ex: João Silva" required>
+          </div>
+          <div class="form-group">
+            <label for="clientPhone">Telefone do Cliente</label>
+            <input type="text" id="clientPhone" class="form-control" placeholder="ex: (11) 98765-4321">
+          </div>
+          <div class="form-group">
+            <label for="clientEmail">E-mail do Cliente</label>
+            <input type="email" id="clientEmail" class="form-control" placeholder="ex: cliente@email.com">
+          </div>
+          <div class="form-group">
+            <label for="clientAddress">Endereço do Cliente</label>
+            <input type="text" id="clientAddress" class="form-control" placeholder="ex: Rua Exemplo, 123 - Cidade/UF">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Descrição dos Serviços -->
+      <section class="form-section">
+        <div class="section-header">
+          <div class="section-icon">🛠️</div>
+          <h2 class="section-title">Descrição dos Serviços</h2>
+        </div>
+
+        <!-- Container de Itens de Serviço -->
+        <div id="servicesContainer">
+          <!-- Itens serão adicionados dinamicamente via JS -->
+        </div>
+
+        <!-- Botão Adicionar Outro Serviço (Estilo idêntico ao anexo) -->
+        <button type="button" id="btnAddService" class="btn-add-item">
+          <span>+</span> Adicionar outro serviço
+        </button>
+      </section>
+
+      <!-- Section 4: Condições de Pagamento e Totais -->
+      <section class="form-section">
+        <div class="section-header">
+          <div class="section-icon">💰</div>
+          <h2 class="section-title">Condições de Pagamento & Totais</h2>
+        </div>
+
+        <div class="grid-2" style="align-items: start;">
+          <div>
+            <div class="form-group">
+              <label for="deposit">Condições do Depósito</label>
+              <input type="text" id="deposit" class="form-control" value="$1,000.00 USD due upon estimate acceptance.">
+            </div>
+            <div class="form-group">
+              <label for="finalPayment">Pagamento Final</label>
+              <input type="text" id="finalPayment" class="form-control" value="Balance due upon service completion.">
+            </div>
+            <div class="form-group" style="max-width: 200px;">
+              <label for="taxRate">Taxa de Imposto (%)</label>
+              <input type="number" step="0.01" id="taxRate" class="form-control" value="6.25">
+            </div>
+          </div>
+
+          <!-- Totais Resumo -->
+          <div class="totals-summary">
+            <div class="summary-row">
+              <span>Subtotal:</span>
+              <strong id="subtotalDisplay">$0.00</strong>
+            </div>
+            <div class="summary-row">
+              <span>Imposto (<span id="taxRateDisplay">6.25%</span>):</span>
+              <strong id="taxDisplay">$0.00</strong>
+            </div>
+            <div class="summary-row total">
+              <span>Total Orçamento:</span>
+              <strong id="totalDisplay">$0.00</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </form>
+  </main>
+
+  <!-- Sticky Bottom Actions Bar -->
+  <footer class="actions-bar">
+    <div class="actions-container">
+      <button type="button" id="btnPreview" class="btn-action btn-secondary">
+        <span>👁️</span> Visualizar Orçamento
+      </button>
+      <button type="button" id="btnGeneratePdf" class="btn-action btn-primary">
+        <span>📄</span> Gerar PDF
+      </button>
+    </div>
+  </footer>
+
+  <!-- Modal de Pré-visualização -->
+  <div id="previewModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Pré-visualização do Orçamento</h3>
+        <button type="button" class="btn-close-modal" id="btnClosePreview">&times;</button>
+      </div>
+      <div class="modal-body">
+        <iframe id="previewIframe"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <span class="toast-icon">✓</span>
+    <span id="toastMessage">PDF gerado com sucesso!</span>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

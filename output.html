@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orçamento - EST-001</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #1f2937;
+      background-color: #f3f4f6;
+      padding: 20px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    /* Header Banner */
+    .header {
+      background-color: #141923;
+      color: #ffffff;
+      padding: 28px 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .brand-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+    }
+
+    .brand-title .company-main {
+      color: #ffffff;
+    }
+
+    .brand-title .company-sub {
+      color: #e05423;
+      font-weight: 700;
+      margin-left: 4px;
+    }
+
+    .brand-tagline {
+      font-size: 13px;
+      font-style: italic;
+      color: #d1d5db;
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    .header-contact {
+      text-align: right;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .header-contact-item {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      color: #ffffff;
+    }
+
+    .header-contact-icon {
+      color: #e05423;
+      font-size: 14px;
+    }
+
+    /* Main Content Padding */
+    .content {
+      padding: 28px 36px;
+    }
+
+    /* Info Cards (Estimate & Client) */
+    .info-card {
+      background-color: #fff8f5;
+      border: 1px solid #fcd3c1;
+      border-radius: 8px;
+      padding: 18px 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .info-section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #141923;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #e05423;
+      margin-bottom: 12px;
+    }
+
+    .info-row {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #374151;
+    }
+
+    .info-label {
+      font-weight: 700;
+      color: #111827;
+    }
+
+    /* Table Styles */
+    .services-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+    }
+
+    .services-table th {
+      background-color: #141923;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 12px 14px;
+      text-align: left;
+    }
+
+    .services-table th.col-no {
+      width: 45px;
+      text-align: center;
+    }
+
+    .services-table th.col-desc {
+      width: 42%;
+    }
+
+    .services-table th.col-qty {
+      width: 18%;
+    }
+
+    .services-table th.col-price {
+      width: 18%;
+    }
+
+    .services-table th.col-total {
+      width: 18%;
+    }
+
+    .services-table td {
+      padding: 12px 14px;
+      font-size: 13px;
+      border-bottom: 1px solid #e5e7eb;
+      color: #374151;
+    }
+
+    .services-table td.col-no {
+      text-align: center;
+    }
+
+    .services-table tr:nth-child(even) td {
+      background-color: #f9fafb;
+    }
+
+    /* Terms and Totals layout */
+    .terms-totals-grid {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .payment-terms {
+      font-size: 13px;
+    }
+
+    .payment-terms h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+
+    .payment-terms p {
+      line-height: 1.6;
+      color: #374151;
+      margin-bottom: 4px;
+    }
+
+    .payment-terms p strong {
+      color: #111827;
+    }
+
+    .totals-box {
+      border-left: 4px solid #141923;
+      padding-left: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: #374151;
+    }
+
+    .total-row.grand-total {
+      font-size: 15px;
+      font-weight: 800;
+      color: #e05423;
+      margin-top: 4px;
+    }
+
+    .total-row.grand-total .total-amount {
+      font-size: 17px;
+    }
+
+    /* Terms & Conditions */
+    .terms-conditions {
+      margin-bottom: 28px;
+    }
+
+    .terms-conditions h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 10px;
+    }
+
+    .terms-list {
+      list-style: none;
+      counter-reset: term-counter;
+      font-size: 12px;
+      color: #374151;
+      line-height: 1.6;
+    }
+
+    .terms-list li {
+      counter-increment: term-counter;
+      margin-bottom: 4px;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .terms-list li::before {
+      content: counter(term-counter) ".";
+      position: absolute;
+      left: 0;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .terms-list li strong {
+      color: #111827;
+    }
+
+    /* Acceptance & Signature Grid */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: end;
+      margin-top: 10px;
+    }
+
+    .acceptance-card {
+      background-color: #141923;
+      color: #ffffff;
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+
+    .acceptance-card h4 {
+      color: #e05423;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .acceptance-card p {
+      font-size: 11px;
+      line-height: 1.5;
+      color: #e5e7eb;
+    }
+
+    .signature-area {
+      text-align: left;
+      padding-bottom: 6px;
+    }
+
+    .signature-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 40px;
+    }
+
+    .signature-line {
+      border-top: 1px solid #141923;
+      padding-top: 6px;
+      font-size: 13px;
+      color: #374151;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background-color: #ffffff;
+        padding: 0;
+      }
+      .page {
+        box-shadow: none;
+        max-width: 100%;
+        border-radius: 0;
+      }
+      @page {
+        size: A4;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+    <!-- Header Banner -->
+    <header class="header">
+      <div class="header-brand">
+        <h1 class="brand-title">
+          <span class="company-main">QUINTELA</span>
+          <span class="company-sub">HOME SERVICE</span>
+        </h1>
+        <p class="brand-tagline">Your home, our commitment!</p>
+      </div>
+
+      <div class="header-contact">
+        <div class="header-contact-item">
+          <span class="header-contact-icon">&#9993;</span>
+          <span>quintelahomeservice@gmail.com</span>
+        </div>
+        <div class="header-contact-item">
+          <span class="header-contact-icon">&#9742;</span>
+          <span>781-974-4831</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content">
+      
+      <!-- Estimate & Client Info Box -->
+      <section class="info-card">
+        <div class="info-column">
+          <h2 class="info-section-title">Estimate Information</h2>
+          <div class="info-row">
+            <span class="info-label">Estimate Number:</span> EST-001
+          </div>
+          <div class="info-row">
+            <span class="info-label">Date:</span> July 22, 2026
+          </div>
+        </div>
+
+        <div class="info-column">
+          <h2 class="info-section-title">Client Information</h2>
+          <div class="info-row">
+            <span class="info-label">Name:</span> [Client Name]
+          </div>
+          <div class="info-row">
+            <span class="info-label">Address:</span> [Client Address]
+          </div>
+          <div class="info-row">
+            <span class="info-label">Phone Number:</span> [Client Phone]
+          </div>
+          <div class="info-row">
+            <span class="info-label">Email:</span> [Client Email]
+          </div>
+        </div>
+      </section>
+
+      <!-- Services Table -->
+      <table class="services-table">
+        <thead>
+          <tr>
+            <th class="col-no">No.</th>
+            <th class="col-desc">Description of Services</th>
+            <th class="col-qty">Quantity</th>
+            <th class="col-price">Unit Price</th>
+            <th class="col-total">Total Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            
+              <tr>
+                <td class="col-no">1</td>
+                <td class="col-desc">Roof Inspection and Asphalt Shingle Repair</td>
+                <td class="col-qty">1 job</td>
+                <td class="col-price">$450.00</td>
+                <td class="col-total">$450.00</td>
+              </tr>
+            
+              <tr>
+                <td class="col-no">2</td>
+                <td class="col-desc">Vinyl Siding Replacement</td>
+                <td class="col-qty">150 sq ft</td>
+                <td class="col-price">$8.50/sqft</td>
+                <td class="col-total">$1,275.00</td>
+              </tr>
+            
+              <tr>
+                <td class="col-no">3</td>
+                <td class="col-desc">Deck Pressure Washing &amp; Staining</td>
+                <td class="col-qty">1 job</td>
+                <td class="col-price">$850.00</td>
+                <td class="col-total">$850.00</td>
+              </tr>
+            
+              <tr>
+                <td class="col-no">4</td>
+                <td class="col-desc">General Home Repairs</td>
+                <td class="col-qty">5 hours</td>
+                <td class="col-price">$65.00/hour</td>
+                <td class="col-total">$325.00</td>
+              </tr>
+            
+          
+        </tbody>
+      </table>
+
+      <!-- Payment Terms and Totals -->
+      <section class="terms-totals-grid">
+        <div class="payment-terms">
+          <h3>Payment Terms</h3>
+          <p><strong>Deposit:</strong> $1,000.00 USD due upon estimate acceptance.</p>
+          <p><strong>Final payment:</strong> Balance due upon service completion.</p>
+        </div>
+
+        <div class="totals-box">
+          <div class="total-row">
+            <span>Subtotal:</span>
+            <span>$2,900.00</span>
+          </div>
+          <div class="total-row">
+            <span>Tax (6.25%):</span>
+            <span>$181.25</span>
+          </div>
+          <div class="total-row grand-total">
+            <span>Total Estimate:</span>
+            <span class="total-amount">$3,081.25</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Terms and Conditions -->
+      <section class="terms-conditions">
+        <h3>Terms and Conditions</h3>
+        <ol class="terms-list">
+          
+            
+              <li><strong>Validity:</strong> This estimate is valid for 30 days from the date issued.</li>
+            
+              <li><strong>Changes:</strong> Any requested changes or additional services after acceptance will require a revised estimate.</li>
+            
+              <li><strong>Warranty:</strong> Services are guaranteed for 12 months from completion, covering only work performed.</li>
+            
+              <li><strong>Liability:</strong> Our company is insured but not liable for damages beyond our control.</li>
+            
+          
+        </ol>
+      </section>
+
+      <!-- Acceptance & Signature -->
+      <section class="bottom-grid">
+        <div class="acceptance-card">
+          <h4>Acceptance of Estimate</h4>
+          <p>By signing below, the client agrees to the terms and conditions in this estimate and authorizes the specified services to start.</p>
+        </div>
+
+        <div class="signature-area">
+          <h4 class="signature-title">Client Signature</h4>
+          <div class="signature-line">
+            [Client Name]
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+</body>
+</html>
