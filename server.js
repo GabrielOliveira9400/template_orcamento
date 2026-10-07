@@ -31,6 +31,7 @@ app.post('/api/preview', (req, res) => {
 // PDF Generation Endpoint via Puppeteer
 app.post('/api/generate-pdf', async (req, res) => {
   const data = req.body;
+  let browser;
 
   try {
     const html = await ejs.renderFile(path.join(__dirname, 'estimate.ejs'), data);
@@ -44,7 +45,7 @@ app.post('/api/generate-pdf', async (req, res) => {
       process.env.CHROME_BIN ||
       undefined;
 
-    const browser = await puppeteer.launch({
+    browser = await puppeteer.launch({
       headless: true,
       ...(executablePath ? { executablePath } : {}),
       args: [
@@ -56,15 +57,13 @@ app.post('/api/generate-pdf', async (req, res) => {
     });
 
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
+    await page.setContent(html, { waitUntil: 'networkidle2', timeout: 60000 });
 
     const pdfBuffer = await page.pdf({
       format: 'A4',
       printBackground: true,
       margin: { top: '0px', right: '0px', bottom: '0px', left: '0px' }
     });
-
-    await browser.close();
 
     const filename = `Orcamento_${(data.estimate && data.estimate.number) ? data.estimate.number : 'EST-001'}.pdf`;
 
@@ -74,6 +73,14 @@ app.post('/api/generate-pdf', async (req, res) => {
   } catch (err) {
     console.error('Erro na geração do PDF com Puppeteer:', err);
     res.status(500).send('Erro ao gerar o arquivo PDF.');
+  } finally {
+    if (browser) {
+      try {
+        await browser.close();
+      } catch (closeErr) {
+        console.error('Erro ao fechar o browser do Puppeteer:', closeErr);
+      }
+    }
   }
 });
 
