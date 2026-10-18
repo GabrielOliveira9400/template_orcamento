@@ -28,24 +28,19 @@ app.post('/api/preview', (req, res) => {
   });
 });
 
-// PDF Generation Endpoint via Puppeteer
-app.post('/api/generate-pdf', async (req, res) => {
-  const data = req.body;
-  let browser;
-
-  try {
-    const html = await ejs.renderFile(path.join(__dirname, 'estimate.ejs'), data);
-
-    if (!puppeteer) {
-      puppeteer = require('puppeteer');
-    }
-
+// Browser compartilhado: evita abrir um Chromium novo a cada PDF
+let browserPromise = null;
+async function getBrowser() {
+  if (!puppeteer) {
+    puppeteer = require('puppeteer');
+  }
+  if (!browserPromise) {
     const executablePath =
       process.env.PUPPETEER_EXECUTABLE_PATH ||
       process.env.CHROME_BIN ||
       undefined;
 
-    browser = await puppeteer.launch({
+    browserPromise = puppeteer.launch({
       headless: true,
       ...(executablePath ? { executablePath } : {}),
       args: [
@@ -54,10 +49,38 @@ app.post('/api/generate-pdf', async (req, res) => {
         '--disable-dev-shm-usage',
         '--disable-gpu'
       ]
+    }).then((b) => {
+      b.on('disconnected', () => { browserPromise = null; });
+      return b;
+    }).catch((e) => {
+      browserPromise = null;
+      throw e;
+    });
+  }
+  return browserPromise;
+}
+
+// PDF Generation Endpoint via Puppeteer
+app.post('/api/generate-pdf', async (req, res) => {
+  const data = req.body;
+  let page;
+
+  try {
+    const html = await ejs.renderFile(path.join(__dirname, 'estimate.ejs'), { ...data, forPdf: true });
+
+    const browser = await getBrowser();
+    page = await browser.newPage();
+
+    // Bloqueia qualquer recurso externo para nunca ficar pendurado na rede
+    await page.setRequestInterception(true);
+    page.on('request', (r) => {
+      const url = r.url();
+      if (url.startsWith('data:') || url.startsWith('about:')) r.continue();
+      else r.abort();
     });
 
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle2', timeout: 60000 });
+    await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: 20000 });
+    await page.evaluate(() => document.fonts.ready);
 
     const pdfBuffer = await page.pdf({
       format: 'A4',
@@ -74,11 +97,11 @@ app.post('/api/generate-pdf', async (req, res) => {
     console.error('Erro na geração do PDF com Puppeteer:', err);
     res.status(500).send('Erro ao gerar o arquivo PDF.');
   } finally {
-    if (browser) {
+    if (page) {
       try {
-        await browser.close();
+        await page.close();
       } catch (closeErr) {
-        console.error('Erro ao fechar o browser do Puppeteer:', closeErr);
+        console.error('Erro ao fechar a página do Puppeteer:', closeErr);
       }
     }
   }

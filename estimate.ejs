@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Orçamento - <%= typeof estimate !== 'undefined' && estimate.number ? estimate.number : 'EST-001' %></title>
   <style>
+    <% if (!locals.forPdf) { %>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    <% } %>
 
     * {
       box-sizing: border-box;

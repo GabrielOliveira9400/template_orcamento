@@ -8,6 +8,7 @@ RUN apt-get update \
     chromium \
     ca-certificates \
     fonts-liberation \
+    fonts-inter \
     fonts-noto-color-emoji \
   && rm -rf /var/lib/apt/lists/*
 
